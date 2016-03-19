@@ -3,5 +3,5 @@ Lroolle’s home page
 
  
 
-Thanks for @iissnan
+Thanks for [@iissnan](https://github.com/iissnan)
 ---------------------------------------
