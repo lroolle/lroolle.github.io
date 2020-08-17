@@ -58,5 +58,23 @@ List 1: [4, 10, 15, 24,26], 24 is in range [20,24].</description>
  Name: gdb Identity Type: Self Signed Root Certificate Type: Code Signing  Let me override defaults    -&amp;gt; continue -&amp;gt; until &amp;ldquo;Specify a Location for Certificate&amp;rdquo;</description>
     </item>
     
+    <item>
+      <title>Effective Go</title>
+      <link>http://lroolle.com/notes/effective-go/</link>
+      <pubDate>Sun, 07 Jun 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/effective-go/</guid>
+      <description>1Formatting 2Commentary 3Names  3.1Package Names 3.2Getters 3.3Interface names 3.4MixedCaps   4Semicolons 5Control structures  5.1If 5.2Redeclaration and reassignment 5.3For 5.4Switch   6Functions  6.1Multiple return values 6.2Named result parameters 6.3Defer   7Data  7.1Allocation with new 7.2Constructors and composite literals 7.3Allocation with make 7.4Arrays 7.5Slices 7.6Two-dimensional slices 7.7Map 7.8Printing 7.9Append   8Initialization  8.1Constants 8.2Variables 8.3The init Function   9Methods  9.1TODOPointers vs. Values   10Interfaces and other types  10.</description>
+    </item>
+    
+    <item>
+      <title>The Go Programming Language Specification</title>
+      <link>http://lroolle.com/notes/golang-spec/</link>
+      <pubDate>Sun, 07 Jun 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/golang-spec/</guid>
+      <description>1Keywords 2Types  2.1Boolean 2.2String 2.3Numeric 2.4Type Convert 2.5Array 2.6Slice 2.7Struct 2.8Pointer 2.9Func 2.10Interface 2.11Map 2.12Channel   3Declarations and scope ¶  3.1Constant 3.2Type declarations 3.3Variable declarations 3.4Function declarations 3.5Method declarations   4make &amp;amp; new 5References  1Keywords break default func interface select case defer go map struct chan else goto package switch const fallthrough if range type continue for import return var 2Types 2.1Boolean import &amp;#34;fmt&amp;#34; func main() { var ToBe bool fmt.</description>
+    </item>
+    
   </channel>
 </rss>

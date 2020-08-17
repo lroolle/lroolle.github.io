@@ -39,47 +39,69 @@
 		
 		
 			<article>
-	<h1><a href="http://lroolle.com/leetcode/0041-first-missing-positive/">0041. First Missing Positive</a></h1>
-	<b><time>05.08.2020 19:06</time></b>
+	<h1><a href="http://lroolle.com/notes/english-grammar-digest/">English Grammar Digest</a></h1>
+	<b><time>07.08.2020 00:00</time></b>
 	
-	<a href="/tags/hard">Hard</a>
-	
-	<a href="/tags/array">Array</a>
-	
-	<a href="/tags/sort">Sort</a>
+	<a href="/tags/english">english</a>
 	
 	<div>
-		Problem  Hard U:3696 D:813
- Given an unsorted integer array, find the smallest missing positive integer.
- Example 1:  Input: [1,2,0] Output: 3  Example 2:  Input: [3,4,-1,1] Output: 2  Example 3:  Input: [7,8,9,11,12] Output: 1 Follow up: NOTE: Your algorithm should run in O(n) time and uses constant extra space.
-Problem Insights At first, we may came up with an idea to sort the array, then loop through to find the missing positive.
+		1English Grammar Digest:english: 2问题一：是否对英语语法体系有 整体认知 ？ 3问题二：为什么学语法？ 4基本句式  4.1简单句及谓语动词 4.2复合句 And 复杂句   5词类  5.1同一句型不同词类 5.2十大词类 5.3句子成分 vs 词类 5.4谓语动词“三大本领” 5.5谓语动词 vs 非谓语动词   6核心：动词 7结语  1English Grammar Digest  Grammar can be tough!!
+ 2问题一：是否对英语语法体系有 整体认知 ？ 3问题二：为什么学语法？ 所有的语法只有一个目的：造句。
+4基本句式 4.1简单句及谓语动词  简单句(Simple Sentences)  什么 + 怎么样  句子成分(Parts of Speech) 两个最基本的句子成分是：  什么？ 怎么样？ 主语(Subject) + 谓语(Predicate)  几乎所有的英语句式都是  人或物 动作“干了什么”-&gt;(Verbs) 主语 + 谓语   有哪些“动作”(动词)？
 		
-			<a href="http://lroolle.com/leetcode/0041-first-missing-positive/">Read more...</a>
+			<a href="http://lroolle.com/notes/english-grammar-digest/">Read more...</a>
 		
 	</div>
 </article>
 
 		
 			<article>
-	<h1><a href="http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/">632. Smallest Range Covering Elements from K Lists</a></h1>
-	<b><time>01.08.2020 00:00</time></b>
+	<h1><a href="http://lroolle.com/notes/macos-catalina-gdb-setup/">MacOS Catalina GDB Setup</a></h1>
+	<b><time>07.07.2020 00:00</time></b>
 	
-	<a href="/tags/hard">Hard</a>
+	<a href="/tags/macos">macos</a>
 	
-	<a href="/tags/minheap">MinHeap</a>
+	<a href="/tags/gdb">gdb</a>
 	
-	<a href="/tags/priorityqueue">PriorityQueue</a>
-	
-	<a href="/tags/slidingwindow">SlidingWindow</a>
+	<a href="/tags/debug">debug</a>
 	
 	<div>
-		Problem  Tags:Hard: D: 1076 U:25
- You have k lists of sorted integers in ascending order. Find the smallest range that includes at least one number from each of the k lists.
-We define the range [a,b] is smaller than range [c,d] if b-a &lt; d-c or a &lt; c if b-a == d-c.
- Example 1:  Input: [[4,10,15,24,26], [0,9,12,20], [5,18,22,30]] Output: [20,24] Explanation:
-List 1: [4, 10, 15, 24,26], 24 is in range [20,24].
+		1Install GDB:gdb: 2Cerfificate 3Codesign 4Change default GDB bin 5Create .gdbinit 6References  The Codesigned:
+ (please check gdb is codesigned - see taskgated(8))
+ 1Install GDB brew install gdb 2Cerfificate -&gt; Keychain access -&gt; Certificate assistance -&gt; Create a certificate
+ Name: gdb Identity Type: Self Signed Root Certificate Type: Code Signing  Let me override defaults    -&gt; continue -&gt; until &ldquo;Specify a Location for Certificate&rdquo;
 		
-			<a href="http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/">Read more...</a>
+			<a href="http://lroolle.com/notes/macos-catalina-gdb-setup/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="http://lroolle.com/notes/effective-go/">Effective Go</a></h1>
+	<b><time>07.06.2020 00:00</time></b>
+	
+	<a href="/tags/golang">golang</a>
+	
+	<div>
+		1Formatting 2Commentary 3Names  3.1Package Names 3.2Getters 3.3Interface names 3.4MixedCaps   4Semicolons 5Control structures  5.1If 5.2Redeclaration and reassignment 5.3For 5.4Switch   6Functions  6.1Multiple return values 6.2Named result parameters 6.3Defer   7Data  7.1Allocation with new 7.2Constructors and composite literals 7.3Allocation with make 7.4Arrays 7.5Slices 7.6Two-dimensional slices 7.7Map 7.8Printing 7.9Append   8Initialization  8.1Constants 8.2Variables 8.3The init Function   9Methods  9.1TODOPointers vs. Values   10Interfaces and other types  10.
+		
+			<a href="http://lroolle.com/notes/effective-go/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="http://lroolle.com/notes/golang-spec/">The Go Programming Language Specification</a></h1>
+	<b><time>07.06.2020 00:00</time></b>
+	
+	<a href="/tags/golang">golang</a>
+	
+	<div>
+		1Keywords 2Types  2.1Boolean 2.2String 2.3Numeric 2.4Type Convert 2.5Array 2.6Slice 2.7Struct 2.8Pointer 2.9Func 2.10Interface 2.11Map 2.12Channel   3Declarations and scope ¶  3.1Constant 3.2Type declarations 3.3Variable declarations 3.4Function declarations 3.5Method declarations   4make &amp; new 5References  1Keywords break default func interface select case defer go map struct chan else goto package switch const fallthrough if range type continue for import return var 2Types 2.1Boolean import &#34;fmt&#34; func main() { var ToBe bool fmt.
+		
+			<a href="http://lroolle.com/notes/golang-spec/">Read more...</a>
 		
 	</div>
 </article>
