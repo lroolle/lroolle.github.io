@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>MacOS Catalina GDB Setup</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	=============<br>
+	== <a href="http://lroolle.com">Lroolle</a> ==<br>
+	=============
+	<div style="float: right;"></div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/notes/"><b>Notes</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>MacOS Catalina GDB Setup</h1>
+			<b><time>07.07.2020 00:00</time></b>
+		       
+		           <a href="/tags/macos">macos</a>
+        	       
+		           <a href="/tags/gdb">gdb</a>
+        	       
+		           <a href="/tags/debug">debug</a>
+        	       
+
+			<div>
+				<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<ul>
+<li><!-- raw HTML omitted -->1<!-- raw HTML omitted --> <a href="#install-gdb">Install GDB</a>:gdb:</li>
+<li><!-- raw HTML omitted -->2<!-- raw HTML omitted --> <a href="#cerfificate">Cerfificate</a></li>
+<li><!-- raw HTML omitted -->3<!-- raw HTML omitted --> <a href="#codesign">Codesign</a></li>
+<li><!-- raw HTML omitted -->4<!-- raw HTML omitted --> <a href="#change-default-gdb-bin">Change default GDB bin</a></li>
+<li><!-- raw HTML omitted -->5<!-- raw HTML omitted --> <a href="#create-dot-gdbinit">Create <code>.gdbinit</code></a></li>
+<li><!-- raw HTML omitted -->6<!-- raw HTML omitted --> <a href="#references">References</a></li>
+</ul>
+<!-- raw HTML omitted -->
+<p>The Codesigned:</p>
+<blockquote>
+<p>(please check gdb is codesigned - see taskgated(8))</p>
+</blockquote>
+<h2 id="install-gdb"><!-- raw HTML omitted -->1<!-- raw HTML omitted --> Install GDB</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">brew install gdb
+</code></pre></div><h2 id="cerfificate"><!-- raw HTML omitted -->2<!-- raw HTML omitted --> Cerfificate</h2>
+<p>-&gt; Keychain access -&gt; Certificate assistance -&gt; Create a certificate</p>
+<ul>
+<li>Name: gdb</li>
+<li>Identity Type: Self Signed Root</li>
+<li>Certificate Type: Code Signing
+<ul>
+<li>Let me override defaults</li>
+</ul>
+</li>
+</ul>
+<p>-&gt; continue -&gt; until &ldquo;Specify a Location for Certificate&rdquo;</p>
+<ul>
+<li>System</li>
+</ul>
+<p>-&gt; Keychain access -&gt; search &ldquo;gdb&rdquo;</p>
+<ul>
+<li>Trust: check all &ldquo;Always trust&rdquo;</li>
+</ul>
+<h2 id="codesign"><!-- raw HTML omitted -->3<!-- raw HTML omitted --> Codesign</h2>
+<ul>
+<li>
+<p>Create file &ldquo;gdb-entitlement.xml&rdquo;</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-xml" data-lang="xml"><span style="color:#75715e">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span style="color:#75715e">&lt;!DOCTYPE plist PUBLIC &#34;-//Apple//DTD PLIST 1.0//EN&#34; &#34;http://www.apple.com/DTDs/PropertyList-1.0.dtd&#34;&gt;</span>
+<span style="color:#f92672">&lt;plist</span> <span style="color:#a6e22e">version=</span><span style="color:#e6db74">&#34;1.0&#34;</span><span style="color:#f92672">&gt;</span>
+<span style="color:#f92672">&lt;dict&gt;</span>
+    <span style="color:#f92672">&lt;key&gt;</span>com.apple.security.cs.debugger<span style="color:#f92672">&lt;/key&gt;</span>
+    <span style="color:#f92672">&lt;true/&gt;</span>
+<span style="color:#f92672">&lt;/dict&gt;</span>
+<span style="color:#f92672">&lt;/plist&gt;</span>
+
+<span style="color:#75715e">&lt;!-- 作者：勥巭炛 --&gt;</span>
+<span style="color:#75715e">&lt;!-- 链接：https://zhuanlan.zhihu.com/p/68398728 --&gt;</span>
+<span style="color:#75715e">&lt;!-- 来源：知乎 --&gt;</span>
+<span style="color:#75715e">&lt;!-- 著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。 --&gt;</span>
+</code></pre></div></li>
+<li>
+<p>Codesign</p>
+</li>
+</ul>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">codesign -entitlements gdb-entitlement.xml -fs gdb /usr/local/Cellar/gdb/<span style="color:#f92672">{</span>version<span style="color:#f92672">}</span>/bin/gdb
+</code></pre></div><h2 id="change-default-gdb-bin"><!-- raw HTML omitted -->4<!-- raw HTML omitted --> Change default GDB bin</h2>
+<p>default is <code>/usr/local/bin/gdb</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">alias ggdb<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;/usr/local/Cellar/gdb/{version}/bin/gdb&#39;</span>
+</code></pre></div><h2 id="create-dot-gdbinit"><!-- raw HTML omitted -->5<!-- raw HTML omitted --> Create <code>.gdbinit</code></h2>
+<p><code>~/.gdbinit</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">set startup-with-shell off
+define g
+python
+import subprocess as p
+cmd <span style="color:#f92672">=</span> <span style="color:#f92672">[</span>“go”, “env”, “GOROOT”<span style="color:#f92672">]</span>
+gdb_cmd <span style="color:#f92672">=</span> “source %s/src/runtime/runtime-gdb.py” %   p.check_output<span style="color:#f92672">(</span>cmd<span style="color:#f92672">)[</span>:-1<span style="color:#f92672">]</span>
+gdb.execute<span style="color:#f92672">(</span>gdb_cmd<span style="color:#f92672">)</span>
+</code></pre></div><p>If <code>run</code> stuck like this</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">&gt;run
+Starting program: ./main
+<span style="color:#f92672">[</span>New Thread 0x2903 of process 3257<span style="color:#f92672">]</span>
+<span style="color:#f92672">[</span>New Thread 0x1c03 of process 3257<span style="color:#f92672">]</span>
+</code></pre></div><p>Then echo this to <code>.gdbinit</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sh" data-lang="sh">echo <span style="color:#e6db74">&#34;set startup-with-shell off&#34;</span> &gt;&gt; ~/.gdbinit
+</code></pre></div><p>If <strong>stucks</strong>, then try <code>sudo gdb ./main</code>, or try another Terminal like <code>iTerm</code>&hellip;</p>
+<h2 id="references"><!-- raw HTML omitted -->6<!-- raw HTML omitted --> References</h2>
+<ul>
+<li><a href="https://sourceware.org/gdb/wiki/PermissionsDarwin">https://sourceware.org/gdb/wiki/PermissionsDarwin</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/68398728">https://zhuanlan.zhihu.com/p/68398728</a></li>
+<li><a href="https://blog.csdn.net/qq%5F33154343/article/details/104784641">https://blog.csdn.net/qq%5F33154343/article/details/104784641</a></li>
+</ul>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/leetcode/0041-first-missing-positive/">0041. First Missing Positive</a></li>
+				
+				<li><a href="/leetcode/0632-smallest-range-covering-elements-from-k-lists/">632. Smallest Range Covering Elements from K Lists</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="http://lroolle.com"><b>Lroolle</b></a>.
+	<a href="https://github.com/lroolle"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

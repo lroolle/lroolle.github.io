@@ -21,5 +21,17 @@
 4基本句式 4.1简单句及谓语动词  简单句(Simple Sentences)  什么 + 怎么样  句子成分(Parts of Speech) 两个最基本的句子成分是：  什么？ 怎么样？ 主语(Subject) + 谓语(Predicate)  几乎所有的英语句式都是  人或物 动作“干了什么”-&amp;gt;(Verbs) 主语 + 谓语   有哪些“动作”(动词)？</description>
     </item>
     
+    <item>
+      <title>MacOS Catalina GDB Setup</title>
+      <link>http://lroolle.com/notes/macos-catalina-gdb-setup/</link>
+      <pubDate>Tue, 07 Jul 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/macos-catalina-gdb-setup/</guid>
+      <description>1Install GDB:gdb: 2Cerfificate 3Codesign 4Change default GDB bin 5Create .gdbinit 6References  The Codesigned:
+ (please check gdb is codesigned - see taskgated(8))
+ 1Install GDB brew install gdb 2Cerfificate -&amp;gt; Keychain access -&amp;gt; Certificate assistance -&amp;gt; Create a certificate
+ Name: gdb Identity Type: Self Signed Root Certificate Type: Code Signing  Let me override defaults    -&amp;gt; continue -&amp;gt; until &amp;ldquo;Specify a Location for Certificate&amp;rdquo;</description>
+    </item>
+    
   </channel>
 </rss>

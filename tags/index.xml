@@ -73,5 +73,32 @@
       <description></description>
     </item>
     
+    <item>
+      <title>debug</title>
+      <link>http://lroolle.com/tags/debug/</link>
+      <pubDate>Tue, 07 Jul 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/debug/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>gdb</title>
+      <link>http://lroolle.com/tags/gdb/</link>
+      <pubDate>Tue, 07 Jul 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/gdb/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>macos</title>
+      <link>http://lroolle.com/tags/macos/</link>
+      <pubDate>Tue, 07 Jul 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/macos/</guid>
+      <description></description>
+    </item>
+    
   </channel>
 </rss>

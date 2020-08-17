@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>debug on Lroolle</title>
+    <link>http://lroolle.com/tags/debug/</link>
+    <description>Recent content in debug on Lroolle</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Tue, 07 Jul 2020 00:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="http://lroolle.com/tags/debug/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>MacOS Catalina GDB Setup</title>
+      <link>http://lroolle.com/notes/macos-catalina-gdb-setup/</link>
+      <pubDate>Tue, 07 Jul 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/macos-catalina-gdb-setup/</guid>
+      <description>1Install GDB:gdb: 2Cerfificate 3Codesign 4Change default GDB bin 5Create .gdbinit 6References  The Codesigned:
+ (please check gdb is codesigned - see taskgated(8))
+ 1Install GDB brew install gdb 2Cerfificate -&amp;gt; Keychain access -&amp;gt; Certificate assistance -&amp;gt; Create a certificate
+ Name: gdb Identity Type: Self Signed Root Certificate Type: Code Signing  Let me override defaults    -&amp;gt; continue -&amp;gt; until &amp;ldquo;Specify a Location for Certificate&amp;rdquo;</description>
+    </item>
+    
+  </channel>
+</rss>
