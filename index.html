@@ -1,66 +1,103 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
 <head>
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>Lroolle Home Page</title>
-    <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
+	<meta name="generator" content="Hugo 0.72.0" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Lroolle</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	<link rel="alternate" type="application/rss+xml" href="/index.xml" title="Lroolle">
 </head>
-
 <body>
-<div class="vi">
-    <h1> lroolle </h1>
-    <div class="sidebar">
-        <div class="header">
-            <div class="quote">
-                <p class="quote-text animate-init">Stay Hungry</p>
-            </div>
-        </div>
-        <div class="menu">
-            <a href="https://github.com/lroolle" class="animate-init">GitHub</a>
-            <a href="http://notes.lroolle.com" class="animate-init">Notes</a>
-        </div>
-    </div>
+	<header>
+	=============<br>
+	== <a href="http://lroolle.com">Lroolle</a> ==<br>
+	=============
+	<div style="float: right;"></div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/notes/"><b>Notes</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
 
-    <div class="content">
-        <span class="close">close</span>
-    </div>
+	
+	<main>
+		
+		
+			<article>
+	<h1><a href="http://lroolle.com/leetcode/0041-first-missing-positive/">0041. First Missing Positive</a></h1>
+	<b><time>05.08.2020 19:06</time></b>
+	
+	<a href="/tags/hard">Hard</a>
+	
+	<a href="/tags/array">Array</a>
+	
+	<a href="/tags/sort">Sort</a>
+	
+	<div>
+		Problem  Hard U:3696 D:813
+ Given an unsorted integer array, find the smallest missing positive integer.
+ Example 1:  Input: [1,2,0] Output: 3  Example 2:  Input: [3,4,-1,1] Output: 2  Example 3:  Input: [7,8,9,11,12] Output: 1 Follow up: NOTE: Your algorithm should run in O(n) time and uses constant extra space.
+Problem Insights At first, we may came up with an idea to sort the array, then loop through to find the missing positive.
+		
+			<a href="http://lroolle.com/leetcode/0041-first-missing-positive/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+			<article>
+	<h1><a href="http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/">632. Smallest Range Covering Elements from K Lists</a></h1>
+	<b><time>01.08.2020 00:00</time></b>
+	
+	<a href="/tags/hard">Hard</a>
+	
+	<a href="/tags/minheap">MinHeap</a>
+	
+	<a href="/tags/priorityqueue">PriorityQueue</a>
+	
+	<a href="/tags/slidingwindow">SlidingWindow</a>
+	
+	<div>
+		Problem  Tags:Hard: D: 1076 U:25
+ You have k lists of sorted integers in ascending order. Find the smallest range that includes at least one number from each of the k lists.
+We define the range [a,b] is smaller than range [c,d] if b-a &lt; d-c or a &lt; c if b-a == d-c.
+ Example 1:  Input: [[4,10,15,24,26], [0,9,12,20], [5,18,22,30]] Output: [20,24] Explanation:
+List 1: [4, 10, 15, 24,26], 24 is in range [20,24].
+		
+			<a href="http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/">Read more...</a>
+		
+	</div>
+</article>
+
+		
+		<div>
+
+1 of 1
+
 </div>
-<script type="text/javascript" src="assets/vendors/jquery/index.js"></script>
-<script>
-    $(document).ready(function () {
-        var delay = 1;
-        var DELAY_STEP = 200;
-        var animationOptions = { opacity: 1, top: 0};
 
-        $('h1').animate(animationOptions).promise()
-                .pipe(animateMain)
-                .pipe(animateLocationIcon);
+	</main>
 
-        function animateMain() {
-            var dfd = $.Deferred();
-            var els = $('.animate-init');
-            var size = els.size();
+	<footer>
+	<p>&copy; 2020 <a href="http://lroolle.com"><b>Lroolle</b></a>.
+	<a href="https://github.com/lroolle"><b>Github</b></a>.
+	</p>
+</footer>
 
-            els.each(function (index, el) {
-                delay++;
-                $(el).delay(index * DELAY_STEP)
-                        .animate(animationOptions);
-                (size - 1 === index) && dfd.resolve();
-            });
-            return dfd.promise();
-        }
-
-        function animateLocationIcon() {
-            $('.location-iconk{{[]}}').delay(delay * DELAY_STEP).animate({
-                opacity: 1,
-                top: 0
-            }).promise().done(animationQuote);
-        }
-
-        function animationQuote() {}
-    });
-</script>
 </body>
 </html>
