@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>MinHeap on Lroolle</title>
+    <link>http://lroolle.com/tags/minheap/</link>
+    <description>Recent content in MinHeap on Lroolle</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Sat, 01 Aug 2020 00:00:00 +0800</lastBuildDate>
+    
+	<atom:link href="http://lroolle.com/tags/minheap/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>632. Smallest Range Covering Elements from K Lists</title>
+      <link>http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/</guid>
+      <description>Problem  Tags:Hard: D: 1076 U:25
+ You have k lists of sorted integers in ascending order. Find the smallest range that includes at least one number from each of the k lists.
+We define the range [a,b] is smaller than range [c,d] if b-a &amp;lt; d-c or a &amp;lt; c if b-a == d-c.
+ Example 1:  Input: [[4,10,15,24,26], [0,9,12,20], [5,18,22,30]] Output: [20,24] Explanation:
+List 1: [4, 10, 15, 24,26], 24 is in range [20,24].</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hard on Lroolle</title>
+    <link>http://lroolle.com/tags/hard/</link>
+    <description>Recent content in Hard on Lroolle</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Wed, 05 Aug 2020 19:06:06 +0800</lastBuildDate>
+    
+	<atom:link href="http://lroolle.com/tags/hard/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>0041. First Missing Positive</title>
+      <link>http://lroolle.com/leetcode/0041-first-missing-positive/</link>
+      <pubDate>Wed, 05 Aug 2020 19:06:06 +0800</pubDate>
+      
+      <guid>http://lroolle.com/leetcode/0041-first-missing-positive/</guid>
+      <description>Problem  Hard U:3696 D:813
+ Given an unsorted integer array, find the smallest missing positive integer.
+ Example 1:  Input: [1,2,0] Output: 3  Example 2:  Input: [3,4,-1,1] Output: 2  Example 3:  Input: [7,8,9,11,12] Output: 1 Follow up: NOTE: Your algorithm should run in O(n) time and uses constant extra space.
+Problem Insights At first, we may came up with an idea to sort the array, then loop through to find the missing positive.</description>
+    </item>
+    
+    <item>
+      <title>632. Smallest Range Covering Elements from K Lists</title>
+      <link>http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/</link>
+      <pubDate>Sat, 01 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/leetcode/0632-smallest-range-covering-elements-from-k-lists/</guid>
+      <description>Problem  Tags:Hard: D: 1076 U:25
+ You have k lists of sorted integers in ascending order. Find the smallest range that includes at least one number from each of the k lists.
+We define the range [a,b] is smaller than range [c,d] if b-a &amp;lt; d-c or a &amp;lt; c if b-a == d-c.
+ Example 1:  Input: [[4,10,15,24,26], [0,9,12,20], [5,18,22,30]] Output: [20,24] Explanation:
+List 1: [4, 10, 15, 24,26], 24 is in range [20,24].</description>
+    </item>
+    
+  </channel>
+</rss>

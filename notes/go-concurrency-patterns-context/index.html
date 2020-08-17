@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Go Concurrency Patterns Context</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	=============<br>
+	== <a href="http://lroolle.com">Lroolle</a> ==<br>
+	=============
+	<div style="float: right;"></div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/notes/"><b>Notes</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Go Concurrency Patterns Context</h1>
+			<b><time>15.08.2020 00:00</time></b>
+		       
+		           <a href="/tags/golang">golang</a>
+        	       
+		           <a href="/tags/context">context</a>
+        	       
+		           <a href="/tags/goroutine">goroutine</a>
+        	       
+
+			<div>
+				<p>Original Post:</p>
+<blockquote>
+<p>-&gt; <a href="https://blog.golang.org/context">Go Concurrency Patterns: Context - The Go Blog</a></p>
+</blockquote>
+<p>Context src:</p>
+<blockquote>
+<p>-&gt; <a href="https://golang.org/pkg/context">context - The Go Programming Language</a></p>
+</blockquote>
+<h2 id="go-concurrency-patterns-context">Go Concurrency Patterns Context</h2>
+<blockquote>
+<p><code>context</code> package makes it easy to pass request-scoped values, cancelation
+signals, and deadlines across API boundaries to all the goroutines involved in
+handling a request</p>
+</blockquote>
+<h2 id="context">Context</h2>
+<p>The core of the context package is the Context type:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#75715e">// A Context carries a deadline, cancelation signal, and request-scoped values
+</span><span style="color:#75715e">// across API boundaries. Its methods are safe for simultaneous use by multiple
+</span><span style="color:#75715e">// goroutines.
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">Context</span> <span style="color:#66d9ef">interface</span> {
+	<span style="color:#75715e">// Done returns a channel that is closed when this Context is canceled
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// or times out.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Done</span>() <span style="color:#f92672">&lt;-</span><span style="color:#66d9ef">chan</span> <span style="color:#66d9ef">struct</span>{}
+
+	<span style="color:#75715e">// Err indicates why this context was canceled, after the Done channel
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// is closed.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Err</span>() <span style="color:#66d9ef">error</span>
+
+	<span style="color:#75715e">// Deadline returns the time when this Context will be canceled, if any.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Deadline</span>() (<span style="color:#a6e22e">deadline</span> <span style="color:#a6e22e">time</span>.<span style="color:#a6e22e">Time</span>, <span style="color:#a6e22e">ok</span> <span style="color:#66d9ef">bool</span>)
+
+	<span style="color:#75715e">// Value returns the value associated with key or nil if none.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">Value</span>(<span style="color:#a6e22e">key</span> <span style="color:#66d9ef">interface</span>{}) <span style="color:#66d9ef">interface</span>{}
+}
+</code></pre></div>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/notes/go-concurrency-patterns-context/">Go Concurrency Patterns Context</a></li>
+				
+				<li><a href="/notes/english-grammar-digest-#&#43;hugo_weight-auto/">English Grammar Digest</a></li>
+				
+				<li><a href="/notes/english-grammar-digest/">English Grammar Digest</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="http://lroolle.com"><b>Lroolle</b></a>.
+	<a href="https://github.com/lroolle"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

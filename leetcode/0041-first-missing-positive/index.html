@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>0041. First Missing Positive</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	=============<br>
+	== <a href="http://lroolle.com">Lroolle</a> ==<br>
+	=============
+	<div style="float: right;"></div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/notes/"><b>Notes</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>0041. First Missing Positive</h1>
+			<b><time>05.08.2020 19:06</time></b>
+		       
+		           <a href="/tags/hard">Hard</a>
+        	       
+		           <a href="/tags/array">Array</a>
+        	       
+		           <a href="/tags/sort">Sort</a>
+        	       
+
+			<div>
+				<h2 id="problem">Problem</h2>
+<blockquote>
+<p>Hard U:3696 D:813</p>
+</blockquote>
+<p>Given an unsorted integer array, find the smallest missing positive integer.</p>
+<ul>
+<li>Example 1:</li>
+</ul>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Input: [1,2,0]
+Output: 3
+</code></pre></div><ul>
+<li>Example 2:</li>
+</ul>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Input: [3,4,-1,1]
+Output: 2
+</code></pre></div><ul>
+<li>Example 3:</li>
+</ul>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Input: [7,8,9,11,12]
+Output: 1
+Follow up:
+</code></pre></div><p>NOTE: <strong>Your algorithm should run in O(n) time and uses constant extra space.</strong></p>
+<h2 id="problem-insights">Problem Insights</h2>
+<p>At first, we may came up with an idea to sort the array, then loop through to
+find the missing positive. However, as the NOTE mentioned, it&rsquo;s obviously
+impossible to run in <code>O(n)</code> time and <code>O(1)</code> space if we&rsquo;re going to sort the array.
+Because, for whom familiar with the sort algorithms, the best sort time at least
+take <code>O(log n)</code> time.</p>
+<p>Other ideas may came up with HashTable etc&hellip;but also impossible to keep an
+<code>O(1)</code> space.</p>
+<p>Let&rsquo;s take a look at the example 2 <code>[3,4,-1,1]</code> and example 3 <code>[7,8,9,11,12]</code>,</p>
+<p>Imaging there are no missing positive, then example 2 should be <code>[1, 2, 3, 4]</code>,
+and example 3 should be <code>[1, 2, 3, 4, 5]</code>.</p>
+<p>Considering the positives, in conclusion, for any <code>nums</code> with length <code>nlen</code>, the
+first missing positive must be within <code>1-nlen</code>.</p>
+<p>To find the missing positive, first of all we can ignore the <code>0</code> and
+<code>non-positive</code> values, then the values which are greater than <code>nlen</code> are
+also useless.</p>
+<p>First idea, we may think about <strong>how to put the right number to the right index</strong>.
+which for example 2, if by some way to <strong>swap</strong> the items to array like this:
+<code>[1, x, 3, 4]</code> (ignore negative <code>-1</code>), then it&rsquo;s not hard to iterate and find
+the missing positive is <code>2</code>. (-&gt; See <a href="#solution-%E2%85%B0">Solution Ⅰ</a>)</p>
+<p>The second idea is, if we can use each index of numbers as a hash to record the
+&ldquo;frequency&rdquo; of each number, then by iterate the array, the <strong>zero frequency</strong>
+number is the missing one. (-&gt; See <a href="#solution-%E2%85%B1">Solution Ⅱ</a>)</p>
+<blockquote>
+<p>This idea comes from: <a href="https://leetcode.com/problems/first-missing-positive/discuss/17080/Python-O(1)-space-O(n)-time-solution-with-explanation">@asones post</a></p>
+</blockquote>
+<h2 id="solutions">Solutions</h2>
+<h3 id="solution-ⅰ">Solution Ⅰ</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">firstMissingPositive2</span>(<span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">nums</span>); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+		<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] &gt; <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] &lt; len(<span style="color:#a6e22e">nums</span>) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>] <span style="color:#f92672">!=</span> <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] {
+			<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>], <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>], <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>]
+		}
+	}
+
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">0</span>; <span style="color:#a6e22e">i</span> &lt; len(<span style="color:#a6e22e">nums</span>); <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] <span style="color:#f92672">!=</span> <span style="color:#a6e22e">i</span><span style="color:#f92672">+</span><span style="color:#ae81ff">1</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+		}
+	}
+	<span style="color:#66d9ef">return</span> len(<span style="color:#a6e22e">nums</span>) <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>
+}
+</code></pre></div><h3 id="solution-ⅱ">Solution Ⅱ</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">firstMissingPositive3</span>(<span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#a6e22e">nums</span> = append(<span style="color:#a6e22e">nums</span>, <span style="color:#ae81ff">0</span>)
+	<span style="color:#a6e22e">nlen</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">nums</span>)
+	<span style="color:#75715e">// Reset those useless elements
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span>, <span style="color:#a6e22e">n</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">nums</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">n</span> &lt; <span style="color:#ae81ff">0</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">n</span> <span style="color:#f92672">&gt;=</span> <span style="color:#a6e22e">nlen</span> {
+			<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>] = <span style="color:#ae81ff">0</span>
+		}
+	}
+	<span style="color:#75715e">//
+</span><span style="color:#75715e"></span>	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">nums</span> {
+		<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">%</span><span style="color:#a6e22e">nlen</span>] <span style="color:#f92672">+=</span> <span style="color:#a6e22e">nlen</span>
+	}
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">i</span> <span style="color:#f92672">:=</span> <span style="color:#ae81ff">1</span>; <span style="color:#a6e22e">i</span> &lt; <span style="color:#a6e22e">nlen</span>; <span style="color:#a6e22e">i</span><span style="color:#f92672">++</span> {
+		<span style="color:#66d9ef">if</span> <span style="color:#a6e22e">nums</span>[<span style="color:#a6e22e">i</span>]<span style="color:#f92672">/</span><span style="color:#a6e22e">nlen</span> <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> {
+			<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">i</span>
+		}
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">nlen</span>
+}
+</code></pre></div>
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/leetcode/0041-first-missing-positive/">0041. First Missing Positive</a></li>
+				
+				<li><a href="/leetcode/0632-smallest-range-covering-elements-from-k-lists/">632. Smallest Range Covering Elements from K Lists</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="http://lroolle.com"><b>Lroolle</b></a>.
+	<a href="https://github.com/lroolle"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>
