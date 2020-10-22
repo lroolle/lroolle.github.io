@@ -5,10 +5,22 @@
     <link>http://lroolle.com/tags/golang/</link>
     <description>Recent content in golang on Lroolle</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 07 Jun 2020 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 09 Aug 2020 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="http://lroolle.com/tags/golang/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Scheduling in GO</title>
+      <link>http://lroolle.com/notes/scheduling-in-go/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/scheduling-in-go/</guid>
+      <description>It’s important to have a general and representative understanding of how both the OS and Go schedulers work to design your multithreaded software correctly.
+- by The Author: ardan-bkennedy (William Kennedy) · GitHub
+  Original Posts:
+ Scheduling In Go : Part I - OS Scheduler Scheduling In Go : Part II - Go Scheduler Scheduling In Go : Part III - Concurrency   Part I - Os Scheduler What is Executing?</description>
+    </item>
     
     <item>
       <title>Effective Go</title>

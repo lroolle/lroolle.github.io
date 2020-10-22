@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type=text/css>body{font-family:monospace;}</style>
+	<title>Scheduling in GO</title>
+	
+	
+	<link rel="stylesheet" href="/css/style.css">
+	
+</head>
+<body>
+	<header>
+	=============<br>
+	== <a href="http://lroolle.com">Lroolle</a> ==<br>
+	=============
+	<div style="float: right;"></div><br>
+	<p>
+	<nav>
+			<a href="/"><b>Start</b></a>.
+			
+			
+			<a href="/notes/"><b>Notes</b></a>.
+			
+			<a href="/categories/"><b>Categories</b></a>.
+			
+			<a href="/tags/"><b>Tags</b></a>.
+			
+	</nav>
+	</p>
+	
+</header>
+
+	
+	<main>
+		<article>
+			<h1>Scheduling in GO</h1>
+			<b><time>09.08.2020 00:00</time></b>
+		       
+		           <a href="/tags/golang">golang</a>
+        	       
+		           <a href="/tags/goroutine">goroutine</a>
+        	       
+		           <a href="/tags/schedule">schedule</a>
+        	       
+		           <a href="/tags/os">os</a>
+        	       
+		           <a href="/tags/thread">thread</a>
+        	       
+
+			<div>
+				<blockquote>
+<p>It’s important to have a general and representative understanding of how both
+the OS and Go schedulers work to design your multithreaded software correctly.</p>
+<p><em>- by The Author: <a href="https://github.com/ardan-bkennedy">ardan-bkennedy (William Kennedy) · GitHub</a></em></p>
+</blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>Original Posts:</p>
+<ul>
+<li><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part1.html">Scheduling In Go : Part I - OS Scheduler</a></li>
+<li><a href="https://www.ardanlabs.com/blog/2018/08/scheduling-in-go-part2.html">Scheduling In Go : Part II - Go Scheduler</a></li>
+<li><a href="https://www.ardanlabs.com/blog/2018/12/scheduling-in-go-part3.html">Scheduling In Go : Part III - Concurrency</a></li>
+</ul>
+</blockquote>
+<h2 id="part-i-os-scheduler"><!-- raw HTML omitted -->1<!-- raw HTML omitted --> Part I - Os Scheduler</h2>
+<h3 id="what-is-executing"><!-- raw HTML omitted -->1.1<!-- raw HTML omitted --> What is Executing?</h3>
+<ol>
+<li>Your program is just a series of <em>machine instructions</em> that need to be
+executed one after the other sequentially.</li>
+<li><strong>Thread</strong> is an <em>OS concept</em>, It’s the job of the Thread to account for and
+sequentially execute the set of instructions it’s assigned.</li>
+<li>Thread is so called by the author: “a path of execution”</li>
+<li>A Thread in linux is just a <code>task_struct</code>, which means the real executing
+job is done by the CPU.</li>
+</ol>
+<h3 id="executing-instructions"><!-- raw HTML omitted -->1.2<!-- raw HTML omitted --> Executing Instructions</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#e6db74">&#34;panic&#34;</span>)
+	<span style="color:#a6e22e">example</span>(make([]<span style="color:#66d9ef">string</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>), <span style="color:#e6db74">&#34;hello&#34;</span>, <span style="color:#ae81ff">10</span>)
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">example</span>(<span style="color:#a6e22e">slice</span> []<span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">str</span> <span style="color:#66d9ef">string</span>, <span style="color:#a6e22e">i</span> <span style="color:#66d9ef">int</span>) {
+	panic(<span style="color:#e6db74">&#34;Want stack trace&#34;</span>)
+}
+</code></pre></div><ul>
+<li>Listing3</li>
+</ul>
+<!-- raw HTML omitted -->
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">$ go tool objdump -S -s &#34;main.example&#34; ./example1
+TEXT main.example(SB) stack_trace/example1/example1.go
+func example(slice []string, str string, i int) {
+  0x104dfa0		65488b0c2530000000	MOVQ GS:0x30, CX
+  0x104dfa9		483b6110		CMPQ 0x10(CX), SP
+  0x104dfad		762c			JBE 0x104dfdb
+  0x104dfaf		4883ec18		SUBQ $0x18, SP
+  0x104dfb3		48896c2410		MOVQ BP, 0x10(SP)
+  0x104dfb8		488d6c2410		LEAQ 0x10(SP), BP
+	panic(&#34;Want stack trace&#34;)
+  0x104dfbd		488d059ca20000	LEAQ runtime.types+41504(SB), AX
+  0x104dfc4		48890424		MOVQ AX, 0(SP)
+  0x104dfc8		488d05a1870200	LEAQ main.statictmp_0(SB), AX
+  0x104dfcf		4889442408		MOVQ AX, 0x8(SP)
+  0x104dfd4		e8c735fdff		CALL runtime.gopanic(SB)
+  0x104dfd9		0f0b			UD2              &lt;--- LOOK HERE PC(+0x39)
+</code></pre></div><p>#+begin_quote
+The hex number <code>+0x39</code> represents the PC offset for an instruction inside the
+example&hellip;</p>
+<p>Remember: the PC is the next instruction, not the current one. Listing 3 is a
+good example of the amd64 based instructions that the Thread for this Go program
+is in charge of executing sequentially. #+end_quote</p>
+<h3 id="thread-states"><!-- raw HTML omitted -->1.3<!-- raw HTML omitted --> Thread States</h3>
+<ol>
+<li>
+<p><strong>Waiting</strong>: This means the Thread is stopped and waiting for something in order
+to continue.These types of latencies are <strong>a root cause</strong> for bad performance.</p>
+</li>
+<li>
+<p><strong>Runnable</strong>: This means the Thread wants time on a core so it can execute its
+assigned machine instructions.</p>
+</li>
+<li>
+<p><strong>Executing</strong>: This means the Thread has been placed on a core and is executing
+its machine instructions. This is what everyone wants.</p>
+</li>
+</ol>
+<h3 id="type-of-works"><!-- raw HTML omitted -->1.4<!-- raw HTML omitted --> Type of Works</h3>
+<ol>
+<li>
+<p><strong>CPU-Bound</strong>: This is work that never creates a situation where the Thread may
+be placed in Waiting states. This is work that is constantly making
+calculations.(Counts Pi)</p>
+</li>
+<li>
+<p><strong>IO-Bound</strong>: This is work that causes Threads to enter into Waiting states.</p>
+</li>
+</ol>
+<h3 id="context-switching"><!-- raw HTML omitted -->1.5<!-- raw HTML omitted --> Context Switching</h3>
+<blockquote>
+<p>The physical act of swapping Threads on a core is called a context switch. A
+context switch happens when the scheduler pulls an Executing thread off a core
+and replaces it with a Runnable Thread.</p>
+<p>Context switches are considered to be <strong>expensive</strong> because it takes times to swap
+Threads on and off a core.</p>
+</blockquote>
+<ol>
+<li>For <em>IO-Bound work</em>, then context switches are going to be an advantage;</li>
+<li>For <em>CPU-Bound work</em>, then context switches are going to be a bad performance.</li>
+</ol>
+<h3 id="less-is-more"><!-- raw HTML omitted -->1.6<!-- raw HTML omitted --> Less is More</h3>
+<blockquote>
+<p>Less Threads in a Runnable state means less scheduling overhead and more time
+each Thread gets over time.</p>
+<p>More Threads in a Runnable state mean less time each Thread gets over time. That
+means less of your work is getting done over time as well.</p>
+</blockquote>
+<h3 id="find-the-balance"><!-- raw HTML omitted -->1.7<!-- raw HTML omitted --> Find The Balance</h3>
+<ul>
+<li>The magic number of 3 in IOCP Thread pool</li>
+</ul>
+<blockquote>
+<p>When writing web services that talked to a database, the magic number of 3
+Threads per core seemed to always give the best throughput on NT.</p>
+</blockquote>
+<h3 id="cache-lines"><!-- raw HTML omitted -->1.8<!-- raw HTML omitted --> Cache Lines</h3>
+<ul>
+<li>
+<p>The <em>cache-coherency problem</em>:</p>
+<blockquote>
+<p><a href="https://www.youtube.com/watch?v=WDIkqP4JbkE&amp;feature=youtu.be">code::dive conference 2014 - Scott Meyers: Cpu Caches and Why You Care - YouTube</a></p>
+</blockquote>
+</li>
+</ul>
+<h3 id="scheduling-decision-scenario"><!-- raw HTML omitted -->1.9<!-- raw HTML omitted --> Scheduling Decision Scenario</h3>
+<ul>
+<li>
+<p>Once the Thread is created and ready to go, should the scheduler:</p>
+</li>
+<li>
+<p>Context-switch the main Thread off of core 1?</p>
+</li>
+<li>
+<p>Have the Thread wait for core 1 to become available pending the completion of
+the main Thread’s time slice?</p>
+</li>
+<li>
+<p>Have the Thread wait for the next available core?</p>
+</li>
+</ul>
+<h3 id="part-ⅰ-conclusion"><!-- raw HTML omitted -->1.10<!-- raw HTML omitted --> Part Ⅰ Conclusion</h3>
+<blockquote>
+<p>This first part of the post provides insights into what you have to consider
+regarding Threads and the OS scheduler when writing multithreaded applications.
+These are the things the Go scheduler takes into consideration as well.</p>
+</blockquote>
+<h2 id="part-ii-go-scheduler"><!-- raw HTML omitted -->2<!-- raw HTML omitted --> Part II - Go Scheduler</h2>
+<h3 id="your-program-starts"><!-- raw HTML omitted -->2.1<!-- raw HTML omitted --> Your Program Starts</h3>
+<h4 id="logical-processor--p"><!-- raw HTML omitted -->2.1.1<!-- raw HTML omitted --> Logical Processor (P)</h4>
+<ul>
+<li>Virtual cores: <strong>P</strong></li>
+</ul>
+<blockquote>
+<p>When your Go program starts up, it’s given a Logical Processor (P) for every
+<em>virtual core</em> that is identified on the host machine.</p>
+<p>For Hyper-Threading CPU, each hardware thread will be presented to your Go
+program as a virtual core.</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#f92672">package</span> <span style="color:#a6e22e">main</span>
+
+<span style="color:#f92672">import</span> <span style="color:#e6db74">&#34;runtime&#34;</span>
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#75715e">// NumCPU returns the number of logical
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// CPUs usable by the current process.
+</span><span style="color:#75715e"></span>	  <span style="color:#75715e">// 四核八线程
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">NumCPU</span>())
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">8
+</code></pre></div><h4 id="machine-m"><!-- raw HTML omitted -->2.1.2<!-- raw HTML omitted --> Machine: <strong>M</strong></h4>
+<ul>
+<li>
+<p>Every P is assigned an OS Thread (“M”). The ‘M’ stands for machine.</p>
+<blockquote>
+<p>This Thread is still managed by the OS and the OS is still responsible for
+placing the Thread on a Core for execution</p>
+</blockquote>
+</li>
+</ul>
+<h4 id="coroutines-goroutines"><!-- raw HTML omitted -->2.1.3<!-- raw HTML omitted --> Coroutines =&gt; Goroutines</h4>
+<ul>
+<li>Every Go program is also given an initial Goroutine (“G”), which is the path
+of execution for a Go program.</li>
+</ul>
+<blockquote>
+<p>You can think of Goroutines as <strong>application-level threads</strong> and they are similar
+to OS Threads in many ways. Just as OS Threads are context-switched on and off a
+core, Goroutines are context-switched on and off an M.</p>
+</blockquote>
+<h4 id="grq-and-lrq"><!-- raw HTML omitted -->2.1.4<!-- raw HTML omitted --> GRQ &amp; LRQ</h4>
+<ol>
+<li>the Local Run Queue (LRQ)</li>
+</ol>
+<blockquote>
+<p>Within the context of a P: Each P was given a LRQ that manages the Goroutines
+assigned to be executed.</p>
+<p>These Goroutines take turns being context-switched on and off the M assigned to
+that P.</p>
+</blockquote>
+<ol>
+<li>the Global Run Queue (GRQ)</li>
+</ol>
+<blockquote>
+<p>The GRQ is for Goroutines that have not been assigned to a P yet. There is a
+process to move Goroutines from the GRQ to a LRQ</p>
+</blockquote>
+<figure>
+    <img src="../img/_20200810_164748https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure2.png"/> 
+</figure>
+
+<h3 id="cooperating-scheduler"><!-- raw HTML omitted -->2.2<!-- raw HTML omitted --> Cooperating Scheduler</h3>
+<ul>
+<li>the OS scheduler is a <strong>preemptive scheduler</strong> (抢占式).</li>
+<li>The current implementation of the Go scheduler is not a preemptive scheduler
+but a <strong>cooperating scheduler</strong>.</li>
+</ul>
+<blockquote>
+<p>What’s brilliant about the Go cooperating scheduler is that it looks and feels
+preemptive. You can’t predict what the Go scheduler is going to do. This is
+because decision making for this cooperating scheduler doesn’t rest in the hands
+of developers, but in the Go runtime.</p>
+<p>It’s important to <strong>think of the Go scheduler as a preemptive scheduler</strong> and
+since the scheduler is non-deterministic, this is not much of a stretch.</p>
+</blockquote>
+<h3 id="goroutine-states"><!-- raw HTML omitted -->2.3<!-- raw HTML omitted --> Goroutine States</h3>
+<p><em>Just like the Thread states in OS scheduler</em></p>
+<ol>
+<li>
+<p><strong>Waiting</strong>: This means the Goroutine is stopped and waiting for something in
+order to continue.</p>
+</li>
+<li>
+<p><strong>Runnable</strong>: This means the Goroutine wants time on an M so it can execute its
+assigned instructions.</p>
+</li>
+<li>
+<p><strong>Executing</strong>: This means the Goroutine has been placed on an M and is
+executing its instructions.</p>
+</li>
+</ol>
+<h3 id="context-switching"><!-- raw HTML omitted -->2.4<!-- raw HTML omitted --> Context Switching</h3>
+<p>There are four classes of events that occur in your Go programs that allow the
+scheduler to make scheduling decisions. This <strong>doesn’t mean it will always happen</strong>
+on one of these events. It means <strong>the scheduler gets the opportunity</strong>.</p>
+<ol>
+<li>The use of the keyword <code>go</code></li>
+<li>Garbage collection</li>
+<li>System calls</li>
+<li>Synchronization and Orchestration</li>
+</ol>
+<p><strong>The scheduler gets the opportunity</strong> when:</p>
+<ul>
+<li>
+<p>The use of the keyword <code>go</code></p>
+<p>Once a new Goroutine is created, it gives the scheduler an opportunity to make
+a scheduling decision.</p>
+</li>
+<li>
+<p>GC</p>
+<p>One smart decision is context-switching a Goroutine that wants to touch the
+heap with those that don’t touch the heap during GC.</p>
+</li>
+<li>
+<p>System calls</p>
+</li>
+<li>
+<p>Synchronization and Orchestration</p>
+<p>If an atomic, mutex, or channel operation call will cause the Goroutine to
+block, the scheduler can context-switch a new Goroutine to run. Once the
+Goroutine can run again, it can be re-queued and eventually context-switched
+back on an M.</p>
+</li>
+</ul>
+<h3 id="asynchronous-system-calls"><!-- raw HTML omitted -->2.5<!-- raw HTML omitted --> Asynchronous System Calls</h3>
+<blockquote>
+<p>the OS you are running on has the ability to handle a system call
+asynchronously, something called the <strong>network poller</strong> can be used to process the
+system call more efficiently. This is accomplished by using <code>kqueue</code> (MacOS),
+<code>epoll</code> (Linux) or <code>iocp</code> (Windows) within these respective OS’s.</p>
+<p>-&gt; <a href="https://golang.org/src/runtime/netpoll.go">src/runtime/netpoll.go - The Go Programming Language</a></p>
+</blockquote>
+<figure>
+    <img src="../img/_20200811_174438https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure4.png"/> 
+</figure>
+
+<h3 id="synchronous-system-calls"><!-- raw HTML omitted -->2.6<!-- raw HTML omitted --> Synchronous System Calls</h3>
+<figure>
+    <img src="../img/_20200811_175620https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure7.png"/> 
+</figure>
+
+<blockquote>
+<p>the scheduler is able to identify that Goroutine-1 has caused the M to block. At
+this point, the scheduler detaches M1 from the P with the blocking Goroutine-1
+still attached. Then the scheduler brings in a new M2 to service the P. At that
+point, Goroutine-2 can be selected from the LRQ and context-switched on M2. If
+an M already exists because of a previous swap, this transition is quicker than
+having to create a new M.</p>
+</blockquote>
+<h3 id="work-stealing"><!-- raw HTML omitted -->2.7<!-- raw HTML omitted --> Work Stealing</h3>
+<h4 id="job-stealing-rules"><!-- raw HTML omitted -->2.7.1<!-- raw HTML omitted --> Job Stealing Rules</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">schedule</span>() {
+    <span style="color:#75715e">// only 1/61 of the time, check the global runnable queue for a G.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// if not found, check the local queue.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// if not found,
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     try to steal from other Ps.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     if not, check the global runnable queue.
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     if not found, poll network.
+</span><span style="color:#75715e"></span>}
+</code></pre></div><figure>
+    <img src="../img/_20200811_182909https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure10.png"/> 
+</figure>
+
+<figure>
+    <img src="../img/_20200811_183023https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure12.png"/> 
+</figure>
+
+<h3 id="practical-example"><!-- raw HTML omitted -->2.8<!-- raw HTML omitted --> Practical Example</h3>
+<h4 id="os-thread-context-switch"><!-- raw HTML omitted -->2.8.1<!-- raw HTML omitted --> OS Thread Context Switch</h4>
+<figure>
+    <img src="../img/_20200811_183435https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure16.png"/> 
+</figure>
+
+<blockquote>
+<p>Threads context-switch once again as the message by Thread 2 is received by
+Thread 1. Now Thread 2 context-switches from an executing state to a waiting
+state and Thread 1 context-switches from a waiting state to a runnable state and
+finally back to an executing state, which allows it to process and send a new
+message back.</p>
+</blockquote>
+<h4 id="goroutine-context-switch"><!-- raw HTML omitted -->2.8.2<!-- raw HTML omitted --> Goroutine Context Switch</h4>
+<figure>
+    <img src="../img/_20200811_183607https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F94_figure19.png"/> 
+</figure>
+
+<blockquote>
+<p>Things on the surface don’t appear to be any different. All the same context
+switches and state changes are occuring whether you use Threads or Goroutines.
+However, there is a major difference between using Threads and Goroutines that
+might not be obvious at first glance.</p>
+<p>In the case of using Goroutines, the same OS Thread and Core is being used for
+all the processing. This means that, <strong>from the OS’s perspective, the OS Thread
+never moves into a waiting state;</strong> not once. As a result all those instructions
+we lost to context switches when using Threads are not lost when using
+Goroutines.</p>
+<p>Essentially, Go has turned <strong>IO/Blocking work into CPU-bound work</strong> at the OS
+level. Since all the context switching is happening at the application level, we
+don’t lose the same ~12k instructions (on average) per context switch that we
+were losing when using Threads.</p>
+</blockquote>
+<h2 id="part-iii-concurrency"><!-- raw HTML omitted -->3<!-- raw HTML omitted --> Part III - Concurrency</h2>
+<h3 id="what-is-concurrency"><!-- raw HTML omitted -->3.1<!-- raw HTML omitted --> What is Concurrency</h3>
+<h4 id="concurrency-vs-parallelism"><!-- raw HTML omitted -->3.1.1<!-- raw HTML omitted --> Concurrency vs Parallelism</h4>
+<blockquote>
+<p>-&gt; <a href="https://blog.golang.org/waza-talk">Concurrency is not parallelism - The Go Blog</a>
+-&gt; <a href="https://talks.golang.org/2012/waza.slide">Slides: Concurrency is not Parallelism</a>
+-&gt; <a href="https://www.youtube.com/watch?v=f6kdp27TYZs">Google I/O 2012 - Go Concurrency Patterns - YouTube</a></p>
+</blockquote>
+<ul>
+<li>Concurrency means “out of order” execution. Concurrency is about dealing with
+lots of things at once.</li>
+<li>Parallelism means executing two or more instructions at the same
+time. Parallelism is about doing lots of things at once.</li>
+<li>Concurrency is about structure, parallelism is about execution.</li>
+</ul>
+<h4 id="concurrency-and-parallelism-in-goroutine"><!-- raw HTML omitted -->3.1.2<!-- raw HTML omitted --> Concurrency &amp; Parallelism in Goroutine</h4>
+<figure>
+    <img src="../img/_20200811_190044https%3A%2F%2Fwww.ardanlabs.com%2Fimages%2Fgoinggo%2F96_figure1.png"/> 
+</figure>
+
+<blockquote>
+<p>you see a diagram of two logical processors (P) each with their independent OS
+thread (M) attached to an independent hardware thread (Core) on the machine. You
+can see two Goroutines (G1 and G2) are executing in <strong>parallel</strong>, executing their
+instructions on their respective OS/hardware thread at the same time. Within
+each logical processor, three Goroutines are taking turns sharing their
+respective OS thread. <strong>All these Goroutines are running concurrently</strong>, executing
+their instructions in no particular order and sharing time on the OS thread.</p>
+</blockquote>
+<h3 id="workloads"><!-- raw HTML omitted -->3.2<!-- raw HTML omitted --> Workloads</h3>
+<h4 id="cpu-bound"><!-- raw HTML omitted -->3.2.1<!-- raw HTML omitted --> CPU-Bound</h4>
+<blockquote>
+<p>With CPU-Bound workloads you need parallelism to leverage concurrency.</p>
+</blockquote>
+<h4 id="io-bound"><!-- raw HTML omitted -->3.2.2<!-- raw HTML omitted --> IO-Bound</h4>
+<blockquote>
+<p>With IO-Bound workloads you don’t need parallelism to use concurrency.</p>
+</blockquote>
+<h3 id="add-numbers"><!-- raw HTML omitted -->3.3<!-- raw HTML omitted --> Add Numbers</h3>
+<h4 id="sequencial-add"><!-- raw HTML omitted -->3.3.1<!-- raw HTML omitted --> Sequencial Add</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">ret</span> <span style="color:#66d9ef">int</span>
+	<span style="color:#66d9ef">for</span> <span style="color:#a6e22e">_</span>, <span style="color:#a6e22e">n</span> <span style="color:#f92672">:=</span> <span style="color:#66d9ef">range</span> <span style="color:#a6e22e">nums</span> {
+		<span style="color:#a6e22e">ret</span> <span style="color:#f92672">+=</span> <span style="color:#a6e22e">n</span>
+	}
+	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">ret</span>
+}
+
+<span style="color:#66d9ef">func</span> <span style="color:#a6e22e">main</span>() {
+    <span style="color:#a6e22e">nums</span> <span style="color:#f92672">:=</span> []<span style="color:#66d9ef">int</span>{<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>}
+	<span style="color:#a6e22e">fmt</span>.<span style="color:#a6e22e">Println</span>(<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">nums</span>))
+}
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">6
+</code></pre></div><h4 id="concurrent-add"><!-- raw HTML omitted -->3.3.2<!-- raw HTML omitted --> Concurrent Add</h4>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">func</span> <span style="color:#a6e22e">addConcurrent</span>(<span style="color:#a6e22e">nums</span> []<span style="color:#66d9ef">int</span>) <span style="color:#66d9ef">int</span> {
+	<span style="color:#a6e22e">gn</span> <span style="color:#f92672">:=</span> <span style="color:#a6e22e">runtime</span>.<span style="color:#a6e22e">NumCPU</span>()
+	<span style="color:#75715e">// divide nums into gn(numbers of goroutines) groups
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// one goroutine in charge of count each part
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">groupSize</span> <span style="color:#f92672">:=</span> len(<span style="color:#a6e22e">nums</span>) <span style="color:#f92672">/</span> <span style="color:#a6e22e">gn</span>
+
+}
+</code></pre></div><h3 id="conclusion"><!-- raw HTML omitted -->3.4<!-- raw HTML omitted --> Conclusion</h3>
+<blockquote>
+<p>You can clearly see that with IO-Bound workloads parallelism was not needed to
+get a big bump in performance. Which is the opposite of what you saw with the
+CPU-Bound work. When it comes to an algorithm like Bubble sort, the use of
+concurrency would add complexity without any real benefit of performance. It’s
+important to determine if your workload is suitable for concurrency and then
+identify the type of workload you have to use the right semantics.</p>
+</blockquote>
+<h2 id="part-ⅳ-dive-into-depth"><!-- raw HTML omitted -->4<!-- raw HTML omitted --> Part Ⅳ - Dive into depth</h2>
+<h3 id="什么是协程-goroutine-怎么实现的"><!-- raw HTML omitted -->4.1<!-- raw HTML omitted --> 什么是协程？Goroutine 怎么实现的？</h3>
+<h4 id="从进程-协程的-历史进程"><!-- raw HTML omitted -->4.1.1<!-- raw HTML omitted --> 从进程 -&gt; 协程的&quot;历史进程&rdquo;</h4>
+<blockquote>
+<p>Process =&gt; Thread =&gt; Coroutine
+进程 =&gt; 线程(LWP, Light weight process) =&gt; 协程(Light weight userspace thread)</p>
+</blockquote>
+<p>从线程到协程是一个不断共享，不断减少切换成本的过程。</p>
+<h4 id="进程和线程"><!-- raw HTML omitted -->4.1.2<!-- raw HTML omitted --> 进程和线程</h4>
+<ol>
+<li>计算机的核心是 CPU，CPU 同一时刻只能执行一个任务;</li>
+<li>进程就好比工厂的车间，它代表 CPU 所能处理的单个任务。任一时刻，CPU 总是运行一个进程，其他进程处于非运行状态;</li>
+<li>线程就好比车间里的工人。一个进程可以包括多个线程;</li>
+<li>车间的空间是工人们共享的，比如 许多房间是每个工人都可以进出的。这象征一个进程的内存空间是共享的， 每个线程都可以 使用这些共享内存;</li>
+<li>&ldquo;互斥锁&rdquo;（Mutual exclusion，缩写 Mutex），防止多个线程同时读写某一块内存区域。</li>
+<li>&ldquo;信号量&rdquo;（Semaphore），用来保证多个线程不会互相冲突。</li>
+</ol>
+<!-- raw HTML omitted -->
+<ol>
+<li>
+<p>进程和线程简单的比喻</p>
+<p>看了一遍排在前面的答案，类似”进程是资源分配的最小单位，线程是 CPU 调度的最小单位
+“这样的回答感觉太抽象，都不太容易让人理解。做个简单的比喻：进程=火车，线程=车厢</p>
+<ol>
+<li>计算机为了完成任务多进程工作（从上海到北京多个班次火车）</li>
+<li>线程在进程下行进（单纯的车厢无法运行）</li>
+<li>进程要比线程消耗更多的计算机资源（采用多列火车相比多个车厢更耗资源）</li>
+<li>进程可以拓展到多机，进程最多适合多核（不同火车可以开在多个轨道上，同一火车的车厢不能在行进的不同的轨道上）</li>
+<li>不同进程间数据很难共享（一辆火车上的乘客很难换到另外一辆火车，比如站点换乘）</li>
+<li>一个进程可以包含多个线程（一辆火车可以有多个车厢）</li>
+<li>同一进程下不同线程间数据很易共享（A 车厢换到 B 车厢很容易）</li>
+<li>进程间不会相互影响，一个线程挂掉将导致整个进程挂掉（一列火车不会影响到另外一列火车，但是如果一列火车上中间的一节车厢着火了，将影响到所有车厢）</li>
+<li>进程使用的内存地址可以上锁，即一个线程使用某些共享内存时，其他线程必须等它结束，才能使用这一块内存。（比如火车上的洗手间）－&ldquo;互斥锁&rdquo;</li>
+<li>进程使用的内存地址可以限定使用量（比如火车上的餐厅，最多只允许多少人进入，如果满了需要在门口等，等有人出来了才能进去）－“信号量”</li>
+</ol>
+</li>
+</ol>
+<!-- raw HTML omitted -->
+<ol start="2">
+<li>
+<p>操作系统的设计，可以归结为三点</p>
+<ol>
+<li>以多进程形式，允许多个任务同时运行；</li>
+<li>以多线程形式，允许单个任务分成不同的部分运行；</li>
+<li>提供协调机制，一方面防止进程之间和线程之间产生冲突，另一方面允许进程之间和线程之间共享资源。</li>
+</ol>
+<blockquote>
+<ul>
+<li><a href="https://www.zhihu.com/question/25532384/answer/411179772">线程和进程的区别是什么？ - 知乎</a></li>
+<li><a href="https://www.ruanyifeng.com/blog/2013/04/processes%5Fand%5Fthreads.html">进程与线程的一个简单解释 - 阮一峰的网络日志</a></li>
+</ul>
+</blockquote>
+</li>
+</ol>
+<h4 id="线程和协程"><!-- raw HTML omitted -->4.1.3<!-- raw HTML omitted --> 线程和协程</h4>
+<blockquote>
+<p>With threads, the operating system switches running threads preemptively
+according to the OS Kernel scheduler</p>
+<p>With coroutines, the programmer and programming language determine when
+to switch coroutines; in other words, tasks are cooperatively multi-tasked by
+pausing and resuming functions at set points, typically (but not necessarily)
+within a single thread.</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p><a href="https://stackoverflow.com/questions/1934715/difference-between-a-coroutine-and-a-thread">architecture - Difference between a &ldquo;coroutine&rdquo; and a &ldquo;thread&rdquo;? - Stack Overflow</a></p>
+</blockquote>
+<h4 id="goroutine-是一种-coroutine-的实现方式"><!-- raw HTML omitted -->4.1.4<!-- raw HTML omitted --> Goroutine 是一种 Coroutine 的实现方式</h4>
+<blockquote>
+<p>The goroutine includes the stack, the instruction pointer and other information
+important for scheduling.</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>正确的理解应该是我们处理事情时就像 CPU, 而不是像线程或者协程. 假如我当前在写某个
+服务, 发现依赖别人的函数还没有 ready, 那就把写服务这件事放一边. 点开企业微信, 我
+去和产品沟通一些问题了. 我和产品沟通了一会后, 检查一下, 发现别人已经把依赖的函数
+提交了, 然后我就最小化企业微信, 切到 IDE, 继续写服务 A 了.</p>
+</blockquote>
+<!-- raw HTML omitted -->
+<blockquote>
+<p>Linux 下的线程其实是 <code>task_struct</code> 结构, 线程其实并不是真正运行的实体, 线程只是
+代表一个 <strong>执行流和其状态</strong>.真正运行驱动流程往前的其实是 CPU. CPU 在时钟的驱动下, 根
+据 PC 寄存器从程序中取指令和操作数, 从 RAM 中取数据, 进行计算, 处理, 跳转, 驱动
+执行流往前. <!-- raw HTML omitted -->CPU 并不关注处理的是线程还是协程<!-- raw HTML omitted -->, 只需要设置 PC 寄存器, 设置栈指针等
+(这些称为上下文), 那么 CPU 就可以欢快的运行这个线程或者这个协程了.</p>
+<p>线程的运行, 其实是 <!-- raw HTML omitted -->被运行<!-- raw HTML omitted -->. 其阻塞, 其实就是被切换出调度队列, 不再去调度执行这
+个执行流. 其他执行流满足其条件, 便会把被移出调度队列的执行流重新放回调度队列.
+协程同理, <!-- raw HTML omitted -->协程其实也是一个数据结构, 记录了要运行什么函数, 运行到哪里了<!-- raw HTML omitted -->. go 在
+用户态实现调度, 所以 go 要有代表协程这种执行流的结构体, 也要有保存和恢复上下文的
+函数, 运行队列. 理解了阻塞的真正含义, 也就知道能够比较容易理解, 为什么 go 的锁,
+channel 这些不阻塞线程.</p>
+</blockquote>
+<h4 id="goroutine-struct-结构体"><!-- raw HTML omitted -->4.1.5<!-- raw HTML omitted --> Goroutine Struct 结构体</h4>
+<p>-&gt; src <a href="/usr/local/Cellar/go/1.14.3/libexec/src/runtime/runtime2.go">@$GOROOT/src/runtime/runtime2.g</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#66d9ef">type</span> <span style="color:#a6e22e">g</span> <span style="color:#66d9ef">struct</span> {
+	<span style="color:#75715e">// Stack parameters.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// stack describes the actual stack memory: [stack.lo, stack.hi).
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// stackguard0 is the stack pointer compared in the Go stack growth prologue.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// It is stack.lo+StackGuard normally, but can be StackPreempt to trigger a preemption.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// stackguard1 is the stack pointer compared in the C stack growth prologue.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// It is stack.lo+StackGuard on g0 and gsignal stacks.
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// It is ~0 on other goroutine stacks, to trigger a call to morestackc (and crash).
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">stack</span>       <span style="color:#a6e22e">stack</span>   <span style="color:#75715e">// offset known to runtime/cgo
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">stackguard0</span> <span style="color:#66d9ef">uintptr</span> <span style="color:#75715e">// offset known to liblink
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">stackguard1</span> <span style="color:#66d9ef">uintptr</span> <span style="color:#75715e">// offset known to liblink
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">_panic</span>       <span style="color:#f92672">*</span><span style="color:#a6e22e">_panic</span> <span style="color:#75715e">// innermost panic - offset known to liblink
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">_defer</span>       <span style="color:#f92672">*</span><span style="color:#a6e22e">_defer</span> <span style="color:#75715e">// innermost defer
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">m</span>            <span style="color:#f92672">*</span><span style="color:#a6e22e">m</span>      <span style="color:#75715e">// current m; offset known to arm liblink
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sched</span>        <span style="color:#a6e22e">gobuf</span>
+	<span style="color:#a6e22e">syscallsp</span>    <span style="color:#66d9ef">uintptr</span>        <span style="color:#75715e">// if status==Gsyscall, syscallsp = sched.sp to use during gc
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">syscallpc</span>    <span style="color:#66d9ef">uintptr</span>        <span style="color:#75715e">// if status==Gsyscall, syscallpc = sched.pc to use during gc
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">stktopsp</span>     <span style="color:#66d9ef">uintptr</span>        <span style="color:#75715e">// expected sp at top of stack, to check in traceback
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">param</span>        <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// passed parameter on wakeup
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">atomicstatus</span> <span style="color:#66d9ef">uint32</span>
+	<span style="color:#a6e22e">stackLock</span>    <span style="color:#66d9ef">uint32</span> <span style="color:#75715e">// sigprof/scang lock; TODO: fold in to atomicstatus
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">goid</span>         <span style="color:#66d9ef">int64</span>
+	<span style="color:#a6e22e">schedlink</span>    <span style="color:#a6e22e">guintptr</span>
+	<span style="color:#a6e22e">waitsince</span>    <span style="color:#66d9ef">int64</span>      <span style="color:#75715e">// approx time when the g become blocked
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">waitreason</span>   <span style="color:#a6e22e">waitReason</span> <span style="color:#75715e">// if status==Gwaiting
+</span><span style="color:#75715e"></span>
+	<span style="color:#a6e22e">preempt</span>       <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// preemption signal, duplicates stackguard0 = stackpreempt
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">preemptStop</span>   <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// transition to _Gpreempted on preemption; otherwise, just deschedule
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">preemptShrink</span> <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// shrink stack at synchronous safe point
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">// asyncSafePoint is set if g is stopped at an asynchronous
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// safe point. This means there are frames on the stack
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// without precise pointer information.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">asyncSafePoint</span> <span style="color:#66d9ef">bool</span>
+
+	<span style="color:#a6e22e">paniconfault</span> <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// panic (instead of crash) on unexpected fault address
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">gcscandone</span>   <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// g has scanned stack; protected by _Gscan bit in status
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">throwsplit</span>   <span style="color:#66d9ef">bool</span> <span style="color:#75715e">// must not split stack
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// activeStackChans indicates that there are unlocked channels
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// pointing into this goroutine&#39;s stack. If true, stack
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// copying needs to acquire channel locks to protect these
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// areas of the stack.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">activeStackChans</span> <span style="color:#66d9ef">bool</span>
+
+	<span style="color:#a6e22e">raceignore</span>     <span style="color:#66d9ef">int8</span>     <span style="color:#75715e">// ignore race detection events
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sysblocktraced</span> <span style="color:#66d9ef">bool</span>     <span style="color:#75715e">// StartTrace has emitted EvGoInSyscall about this goroutine
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">sysexitticks</span>   <span style="color:#66d9ef">int64</span>    <span style="color:#75715e">// cputicks when syscall has returned (for tracing)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">traceseq</span>       <span style="color:#66d9ef">uint64</span>   <span style="color:#75715e">// trace event sequencer
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">tracelastp</span>     <span style="color:#a6e22e">puintptr</span> <span style="color:#75715e">// last P emitted an event for this goroutine
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">lockedm</span>        <span style="color:#a6e22e">muintptr</span>
+	<span style="color:#a6e22e">sig</span>            <span style="color:#66d9ef">uint32</span>
+	<span style="color:#a6e22e">writebuf</span>       []<span style="color:#66d9ef">byte</span>
+	<span style="color:#a6e22e">sigcode0</span>       <span style="color:#66d9ef">uintptr</span>
+	<span style="color:#a6e22e">sigcode1</span>       <span style="color:#66d9ef">uintptr</span>
+	<span style="color:#a6e22e">sigpc</span>          <span style="color:#66d9ef">uintptr</span>
+	<span style="color:#a6e22e">gopc</span>           <span style="color:#66d9ef">uintptr</span>         <span style="color:#75715e">// pc of go statement that created this goroutine
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">ancestors</span>      <span style="color:#f92672">*</span>[]<span style="color:#a6e22e">ancestorInfo</span> <span style="color:#75715e">// ancestor information goroutine(s) that created this goroutine (only used if debug.tracebackancestors)
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">startpc</span>        <span style="color:#66d9ef">uintptr</span>         <span style="color:#75715e">// pc of goroutine function
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">racectx</span>        <span style="color:#66d9ef">uintptr</span>
+	<span style="color:#a6e22e">waiting</span>        <span style="color:#f92672">*</span><span style="color:#a6e22e">sudog</span>         <span style="color:#75715e">// sudog structures this g is waiting on (that have a valid elem ptr); in lock order
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">cgoCtxt</span>        []<span style="color:#66d9ef">uintptr</span>      <span style="color:#75715e">// cgo traceback context
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">labels</span>         <span style="color:#a6e22e">unsafe</span>.<span style="color:#a6e22e">Pointer</span> <span style="color:#75715e">// profiler labels
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">timer</span>          <span style="color:#f92672">*</span><span style="color:#a6e22e">timer</span>         <span style="color:#75715e">// cached timer for time.Sleep
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">selectDone</span>     <span style="color:#66d9ef">uint32</span>         <span style="color:#75715e">// are we participating in a select and did someone win the race?
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">// Per-G GC state
+</span><span style="color:#75715e"></span>
+	<span style="color:#75715e">// gcAssistBytes is this G&#39;s GC assist credit in terms of
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// bytes allocated. If this is positive, then the G has credit
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// to allocate gcAssistBytes bytes without assisting. If this
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// is negative, then the G must correct this by performing
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// scan work. We track this in bytes to make it fast to update
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// and check for debt in the malloc hot path. The assist ratio
+</span><span style="color:#75715e"></span>	<span style="color:#75715e">// determines how this corresponds to scan work debt.
+</span><span style="color:#75715e"></span>	<span style="color:#a6e22e">gcAssistBytes</span> <span style="color:#66d9ef">int64</span>
+}
+</code></pre></div><blockquote>
+<p>一个协程代表了一个执行流, 执行流有需要执行的函数(go func()), 有函数的入参(a1, a2),
+有当前执行流的状态和进度(对应 CPU 的 PC 寄存器和 SP 寄存器), 当然也需要有保
+存状态的地方, 用于执行流恢复. 真正代表协程的是 <code>runtime.g</code> 结构体. 每个 <code>go func</code>
+都会编译成 <code>runtime.newproc</code> 函数, 最终有一个 <code>runtime.g</code> 对象放入调度队列.
+上面的 <code>func</code> 函数的指针设置在 <code>runtime.g</code> 的 <code>startfunc</code> 字段, 参数会在
+<code>newproc</code> 函数里拷贝到 stack 中, <code>sched</code> 用于保存协程切换时的 pc 位置和栈位置.
+协程切换出去和恢复回来需要保存上下文, 恢复上下文, 这些由以下两个汇编函数实现. 以
+上就能实现协程这种执 行流, 并能进行切换和恢复。</p>
+</blockquote>
+<h3 id="什么是-gpm-模型-attach"><!-- raw HTML omitted -->4.2<!-- raw HTML omitted --> 什么是 GPM 模型？:ATTACH:</h3>
+<figure>
+    <img src="_20200812_170534v2-a06db1f245421b17c64d7bc4f338b71e_r.jpg.jpeg"/> 
+</figure>
+
+<h2 id="conclusion"><!-- raw HTML omitted -->5<!-- raw HTML omitted --> Conclusion</h2>
+<ol>
+<li></li>
+</ol>
+<h2 id="references"><!-- raw HTML omitted -->6<!-- raw HTML omitted --> References</h2>
+<ul>
+<li><a href="https://medium.com/a-journey-with-go/go-goroutine-and-preemption-d6bc2aa2f4b7">Go: Goroutine and Preemption. ℹ️ This article is based on Go 1.13. | by Vince&hellip;</a></li>
+<li><a href="https://www.zhihu.com/question/20862617/answer/921061289">Golang 的 goroutine 是如何实现的？ - 知乎</a></li>
+<li><a href="https://www.ruanyifeng.com/blog/2013/04/processes%5Fand%5Fthreads.html">进程与线程的一个简单解释 - 阮一峰的网络日志</a></li>
+<li><a href="https://www.zhihu.com/question/25532384/answer/411179772">线程和进程的区别是什么？ - 知乎</a></li>
+<li><a href="https://morsmachine.dk/go-scheduler">The Go scheduler - Morsing&rsquo;s blog</a></li>
+</ul>
+
+			</div>
+		</article>
+	</main>
+<aside>
+	<div>
+		<div>
+			<h3>LATEST POSTS</h3>
+		</div>
+		<div>
+			<ul>
+				
+				<li><a href="/notes/words-20000/">Words 20000</a></li>
+				
+				<li><a href="/notes/img/scheduling-in-go/">Scheduling in GO</a></li>
+				
+				<li><a href="/notes/scheduling-in-go/">Scheduling in GO</a></li>
+				
+				<li><a href="/notes/english-grammar-digest/">English Grammar Digest</a></li>
+				
+				<li><a href="/notes/macos-catalina-gdb-setup/">MacOS Catalina GDB Setup</a></li>
+				
+			</ul>
+		</div>
+	</div>
+</aside>
+
+
+	<footer>
+	<p>&copy; 2020 <a href="http://lroolle.com"><b>Lroolle</b></a>.
+	<a href="https://github.com/lroolle"><b>Github</b></a>.
+	</p>
+</footer>
+
+</body>
+</html>

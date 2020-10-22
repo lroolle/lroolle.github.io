@@ -5,10 +5,31 @@
     <link>http://lroolle.com/notes/</link>
     <description>Recent content in Notes on Lroolle</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 07 Aug 2020 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 20 Oct 2020 13:18:00 +0800</lastBuildDate>
     
 	<atom:link href="http://lroolle.com/notes/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Words 20000</title>
+      <link>http://lroolle.com/notes/words-20000/</link>
+      <pubDate>Tue, 20 Oct 2020 13:18:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/words-20000/</guid>
+      <description>1Words 20000 2-cess -ceed -cede -gress -grad -gred: to go/step/degree/walk  2.1access (ac|cess ækses) 2.2process (pro|cess ˈprɑːses) 2.3procession (pro|ces|sion prəseʃən) 2.4proceed (pro|ceed proʊˈsiːd) 2.5precede (pre|cede prɪsiːd ) 2.6exceed (ex|ceed ɪkˈsiːd) 2.7recede (re|cede rɪˈsiːd) 2.8procedure 2.9cease(ceas|e [cess] siːs) 2.10progress 2.11aggress 2.12graduate 2.13gradation 2.14gradient 2.15ingredient    1Words 20000 This is a detailed explained and exampled notes taken during conquering 20000 English words, by learning from &amp;ldquo;Online Etymology Dictionary | Origin, history and meaning of English words&amp;rdquo;, also, here is a none licensed but perfect free &amp;ldquo;Online Course from bilibili.</description>
+    </item>
+    
+    <item>
+      <title>Scheduling in GO</title>
+      <link>http://lroolle.com/notes/scheduling-in-go/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/notes/scheduling-in-go/</guid>
+      <description>It’s important to have a general and representative understanding of how both the OS and Go schedulers work to design your multithreaded software correctly.
+- by The Author: ardan-bkennedy (William Kennedy) · GitHub
+  Original Posts:
+ Scheduling In Go : Part I - OS Scheduler Scheduling In Go : Part II - Go Scheduler Scheduling In Go : Part III - Concurrency   Part I - Os Scheduler What is Executing?</description>
+    </item>
     
     <item>
       <title>English Grammar Digest</title>
@@ -16,9 +37,9 @@
       <pubDate>Fri, 07 Aug 2020 00:00:00 +0800</pubDate>
       
       <guid>http://lroolle.com/notes/english-grammar-digest/</guid>
-      <description>1English Grammar Digest:english: 2问题一：是否对英语语法体系有 整体认知 ？ 3问题二：为什么学语法？ 4基本句式  4.1简单句及谓语动词 4.2复合句 And 复杂句   5词类  5.1同一句型不同词类 5.2十大词类 5.3句子成分 vs 词类 5.4谓语动词“三大本领” 5.5谓语动词 vs 非谓语动词   6核心：动词 7结语  1English Grammar Digest  Grammar can be tough!!
- 2问题一：是否对英语语法体系有 整体认知 ？ 3问题二：为什么学语法？ 所有的语法只有一个目的：造句。
-4基本句式 4.1简单句及谓语动词  简单句(Simple Sentences)  什么 + 怎么样  句子成分(Parts of Speech) 两个最基本的句子成分是：  什么？ 怎么样？ 主语(Subject) + 谓语(Predicate)  几乎所有的英语句式都是  人或物 动作“干了什么”-&amp;gt;(Verbs) 主语 + 谓语   有哪些“动作”(动词)？</description>
+      <description>English Grammar Digest:english: 问题一：是否对英语语法体系有 整体认知 ？ 问题二：为什么学语法？ 基本句式  简单句及谓语动词 复合句 And 复杂句   词类  同一句型不同词类 十大词类 句子成分 vs 词类 谓语动词“三大本领” 谓语动词 vs 非谓语动词   核心：动词 结语 Verb Moods  回顾：英语动词 动词语气    English Grammar Digest  Grammar can be tough!!
+ 问题一：是否对英语语法体系有 整体认知 ？ 问题二：为什么学语法？ 所有的语法只有一个目的：造句。
+基本句式 简单句及谓语动词  简单句(Simple Sentences)  什么 + 怎么样  句子成分(Parts of Speech) 两个最基本的句子成分是：  什么？ 怎么样？ 主语(Subject) + 谓语(Predicate)  几乎所有的英语句式都是  人或物 动作“干了什么”-&amp;gt;(Verbs) 主语 + 谓语   有哪些“动作”(动词)？</description>
     </item>
     
     <item>

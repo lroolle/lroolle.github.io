@@ -4,37 +4,77 @@
   
   <url>
     <loc>http://lroolle.com/categories/</loc>
-    <lastmod>2020-08-17T14:02:14+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://lroolle.com/tags/english/</loc>
-    <lastmod>2020-08-17T13:29:27+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://lroolle.com/notes/english-grammar-digest/</loc>
-    <lastmod>2020-08-17T13:29:27+08:00</lastmod>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://lroolle.com/</loc>
-    <lastmod>2020-08-17T14:02:14+08:00</lastmod>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://lroolle.com/notes/</loc>
-    <lastmod>2020-08-17T14:02:14+08:00</lastmod>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/notes/</loc>
+    <lastmod>2020-10-22T15:12:01+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://lroolle.com/categories/notes/</loc>
-    <lastmod>2020-08-17T14:02:14+08:00</lastmod>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
   </url>
   
   <url>
     <loc>http://lroolle.com/tags/</loc>
-    <lastmod>2020-08-17T14:02:14+08:00</lastmod>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/notes/words-20000/</loc>
+    <lastmod>2020-10-22T15:12:01+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/golang/</loc>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/goroutine/</loc>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/os/</loc>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/schedule/</loc>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/notes/scheduling-in-go/</loc>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/thread/</loc>
+    <lastmod>2020-10-22T15:17:17+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/tags/english/</loc>
+    <lastmod>2020-10-21T00:40:10+08:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://lroolle.com/notes/english-grammar-digest/</loc>
+    <lastmod>2020-10-21T00:40:10+08:00</lastmod>
   </url>
   
   <url>
@@ -110,11 +150,6 @@
   <url>
     <loc>http://lroolle.com/notes/effective-go/</loc>
     <lastmod>2020-08-17T13:57:53+08:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://lroolle.com/tags/golang/</loc>
-    <lastmod>2020-08-17T14:02:14+08:00</lastmod>
   </url>
   
   <url>

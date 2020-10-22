@@ -5,10 +5,64 @@
     <link>http://lroolle.com/tags/</link>
     <description>Recent content in Tags on Lroolle</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 07 Aug 2020 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 20 Oct 2020 13:18:00 +0800</lastBuildDate>
     
 	<atom:link href="http://lroolle.com/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>notes</title>
+      <link>http://lroolle.com/tags/notes/</link>
+      <pubDate>Tue, 20 Oct 2020 13:18:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/notes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>golang</title>
+      <link>http://lroolle.com/tags/golang/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/golang/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>goroutine</title>
+      <link>http://lroolle.com/tags/goroutine/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/goroutine/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>os</title>
+      <link>http://lroolle.com/tags/os/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/os/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>schedule</title>
+      <link>http://lroolle.com/tags/schedule/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/schedule/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>thread</title>
+      <link>http://lroolle.com/tags/thread/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
+      
+      <guid>http://lroolle.com/tags/thread/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>english</title>
@@ -97,15 +151,6 @@
       <pubDate>Tue, 07 Jul 2020 00:00:00 +0800</pubDate>
       
       <guid>http://lroolle.com/tags/macos/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>golang</title>
-      <link>http://lroolle.com/tags/golang/</link>
-      <pubDate>Sun, 07 Jun 2020 00:00:00 +0800</pubDate>
-      
-      <guid>http://lroolle.com/tags/golang/</guid>
       <description></description>
     </item>
     

@@ -5,24 +5,21 @@
     <link>http://lroolle.com/tags/goroutine/</link>
     <description>Recent content in goroutine on Lroolle</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 15 Aug 2020 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 09 Aug 2020 00:00:00 +0800</lastBuildDate>
     
 	<atom:link href="http://lroolle.com/tags/goroutine/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Go Concurrency Patterns Context</title>
-      <link>http://lroolle.com/notes/go-concurrency-patterns-context/</link>
-      <pubDate>Sat, 15 Aug 2020 00:00:00 +0800</pubDate>
+      <title>Scheduling in GO</title>
+      <link>http://lroolle.com/notes/scheduling-in-go/</link>
+      <pubDate>Sun, 09 Aug 2020 00:00:00 +0800</pubDate>
       
-      <guid>http://lroolle.com/notes/go-concurrency-patterns-context/</guid>
-      <description>Original Post:
- -&amp;gt; Go Concurrency Patterns: Context - The Go Blog
- Context src:
- -&amp;gt; context - The Go Programming Language
- Go Concurrency Patterns Context  context package makes it easy to pass request-scoped values, cancelation signals, and deadlines across API boundaries to all the goroutines involved in handling a request
- Context The core of the context package is the Context type:
-// A Context carries a deadline, cancelation signal, and request-scoped values // across API boundaries.</description>
+      <guid>http://lroolle.com/notes/scheduling-in-go/</guid>
+      <description>It’s important to have a general and representative understanding of how both the OS and Go schedulers work to design your multithreaded software correctly.
+- by The Author: ardan-bkennedy (William Kennedy) · GitHub
+  Original Posts:
+ Scheduling In Go : Part I - OS Scheduler Scheduling In Go : Part II - Go Scheduler Scheduling In Go : Part III - Concurrency   Part I - Os Scheduler What is Executing?</description>
     </item>
     
   </channel>
